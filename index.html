@@ -22,7 +22,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0 auto;
-            padding: 0;
+            padding: 0 0 90px 0; /* Отступ снизу для плавающей панели корзины */
             max-width: 500px;
             text-align: center;
             -webkit-font-smoothing: antialiased;
@@ -44,24 +44,17 @@
 
         .catalog { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; justify-items: center; }
 
-        /* Карточка товара с пропорциями 3:4 (как на Ozon) */
+        /* Карточка товара 3:4 */
         .product-card {
             background: var(--card-bg); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
             display: flex; flex-direction: column; width: 100%; text-align: left; cursor: pointer;
         }
         .product-img-container {
-            width: 100%;
-            aspect-ratio: 3 / 4; /* Пропорции Ozon/Wildberries */
-            position: relative;
-            background-color: #f0f0f0;
+            width: 100%; aspect-ratio: 3 / 4; position: relative; background-color: #f0f0f0;
         }
-        .product-img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-        }
+        .product-img { width: 100%; height: 100%; object-fit: cover; }
         .photo-badge {
-            position: absolute; bottom: 8px; right: 8px;
-            background: rgba(0,0,0,0.6); color: #fff;
+            position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff;
             font-size: 10px; padding: 2px 6px; border-radius: 6px;
         }
 
@@ -70,20 +63,30 @@
         .product-desc { font-size: 11px; color: var(--hint-color); margin: 0 0 8px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .product-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
         .product-price { font-size: 14px; font-weight: 700; }
-        .buy-btn { background: var(--btn-bg); color: var(--btn-text); border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        
+        .action-btn { background: var(--btn-bg); color: var(--btn-text); border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-        /* Модальное окно (просмотр товара и фото) */
+        /* Плавающая панель корзины внизу */
+        .cart-bar {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 500px; background: var(--card-bg); box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            padding: 15px; box-sizing: border-box; display: none; justify-content: space-between; align-items: center; z-index: 900;
+            border-top-left-radius: 20px; border-top-right-radius: 20px;
+        }
+        .cart-info { text-align: left; }
+        .cart-count { font-size: 12px; color: var(--hint-color); }
+        .cart-total { font-size: 16px; font-weight: 700; }
+
+        /* Модальное окно */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
         }
         .modal-content {
             background: var(--card-bg); color: var(--text-color); width: 100%; max-width: 400px;
-            border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; text-align: left;
+            border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; text-align: left; position: relative;
         }
-        .modal-slider {
-            width: 100%; aspect-ratio: 3 / 4; position: relative; background: #000;
-        }
+        .modal-slider { width: 100%; aspect-ratio: 3 / 4; position: relative; background: #000; }
         .modal-slider img { width: 100%; height: 100%; object-fit: contain; }
         .slider-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
@@ -94,8 +97,14 @@
         .modal-body { padding: 15px; overflow-y: auto; }
         .modal-title { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
         .modal-desc { font-size: 13px; color: var(--hint-color); margin: 0 0 15px; line-height: 1.4; }
+        
+        /* Счетчик кратности 5 */
+        .counter-container { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .counter-btn { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--hint-color); width: 36px; height: 36px; border-radius: 50%; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .counter-value { font-size: 16px; font-weight: 700; min-width: 40px; text-align: center; }
+
         .modal-footer { display: flex; justify-content: space-between; align-items: center; }
-        .modal-price { font-size: 20px; font-weight: 700; }
+        .modal-price { font-size: 18px; font-weight: 700; }
         .close-modal { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); color: #fff; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; z-index: 1010; font-size: 16px; }
 
         .loading { grid-column: span 2; text-align: center; padding: 40px 20px; font-size: 14px; }
@@ -112,9 +121,18 @@
         <div class="loading">⏳ Загружаем каталог...</div>
     </div>
 
+    <!-- Плавающая панель корзины -->
+    <div class="cart-bar" id="cartBar">
+        <div class="cart-info">
+            <div class="cart-count" id="cartCountText">В корзине 0 товаров</div>
+            <div class="cart-total" id="cartTotalText">0 ₽</div>
+        </div>
+        <button class="action-btn" style="padding: 12px 24px; font-size: 14px;" onclick="checkout()">Оформить заказ</button>
+    </div>
+
     <!-- Модальное окно товара -->
     <div class="modal" id="productModal">
-        <div class="modal-content" style="position: relative;">
+        <div class="modal-content">
             <button class="close-modal" onclick="closeModal()">✕</button>
             <div class="modal-slider" id="modalSlider">
                 <img id="modalImg" src="" alt="">
@@ -124,9 +142,17 @@
             <div class="modal-body">
                 <h2 class="modal-title" id="modalTitle"></h2>
                 <p class="modal-desc" id="modalDesc"></p>
+                
+                <div style="font-size: 12px; color: var(--hint-color); margin-bottom: 5px;">Количество (кратно 5):</div>
+                <div class="counter-container">
+                    <button class="counter-btn" onclick="updateModalQty(-5)">−</button>
+                    <span class="counter-value" id="modalQty">5</span>
+                    <button class="counter-btn" onclick="updateModalQty(5)">+</button>
+                </div>
+
                 <div class="modal-footer">
                     <span class="modal-price" id="modalPrice"></span>
-                    <button class="buy-btn" id="modalBuyBtn" style="padding: 10px 20px; font-size: 14px;">В КОРЗИНУ</button>
+                    <button class="action-btn" id="modalAddBtn" style="padding: 10px 20px; font-size: 14px;" onclick="addCurrentToCart()">В корзину</button>
                 </div>
             </div>
         </div>
@@ -141,9 +167,12 @@
 
         let allProducts = [];
         let activeCategory = 'Все';
+        let cart = {}; // Ключ: название товара, Значение: количество
+
         let currentPhotos = [];
         let currentSlideIndex = 0;
-        let currentProductName = '';
+        let currentItem = null;
+        let selectedQty = 5;
 
         async function loadProducts() {
             try {
@@ -204,14 +233,13 @@
                 let desc = safeString(item['Описание']);
                 let price = safeString(item['Цена']) || 'По запросу';
                 
-                // Обработка нескольких фото (разделенных запятой)
                 let rawPhotos = safeString(item['Ссылка_на_фото']);
                 let photos = rawPhotos ? rawPhotos.split(',').map(p => p.trim()).filter(p => p) : ['https://via.placeholder.com/300?text=Нет+фото'];
                 let mainPhoto = photos[0];
 
                 let card = document.createElement('div');
                 card.className = 'product-card';
-                card.onclick = () => openModal(name, desc, price, photos);
+                card.onclick = () => openModal(item, photos);
 
                 card.innerHTML = `
                     <div class="product-img-container">
@@ -223,7 +251,7 @@
                         <p class="product-desc">${desc}</p>
                         <div class="product-bottom">
                             <span class="product-price">${price}</span>
-                            <button class="buy-btn" onclick="event.stopPropagation(); buy('${name.replace(/'/g, "\\'")}')">Купить</button>
+                            <button class="action-btn" onclick="event.stopPropagation(); quickAdd('${name.replace(/'/g, "\\'")}')">+ В корзину</button>
                         </div>
                     </div>
                 `;
@@ -231,30 +259,53 @@
             });
         }
 
-        // Открытие модального окна товара
-        function openModal(name, desc, price, photos) {
+        function quickAdd(name) {
             tg.HapticFeedback.impactOccurred('light');
+            if (!cart[name]) cart[name] = 5;
+            else cart[name] += 5;
+            updateCartBar();
+        }
+
+        function openModal(item, photos) {
+            tg.HapticFeedback.impactOccurred('light');
+            currentItem = item;
             currentPhotos = photos;
             currentSlideIndex = 0;
-            currentProductName = name;
+            selectedQty = 5;
+
+            let name = safeString(item['Название']) || 'Без названия';
+            let desc = safeString(item['Описание']) || 'Описание отсутствует';
+            let price = safeString(item['Цена']) || 'По запросу';
 
             document.getElementById('modalTitle').textContent = name;
-            document.getElementById('modalDesc').textContent = desc || 'Описание отсутствует';
+            document.getElementById('modalDesc').textContent = desc;
             document.getElementById('modalPrice').textContent = price;
+            document.getElementById('modalQty').textContent = selectedQty;
             
             updateSlide();
-
-            // Кнопка купить в модалке
-            document.getElementById('modalBuyBtn').onclick = () => {
-                buy(name);
-                closeModal();
-            };
-
             document.getElementById('productModal').style.display = 'flex';
         }
 
         function closeModal() {
             document.getElementById('productModal').style.display = 'none';
+        }
+
+        function updateModalQty(delta) {
+            selectedQty += delta;
+            if (selectedQty < 5) selectedQty = 5;
+            document.getElementById('modalQty').textContent = selectedQty;
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function addCurrentToCart() {
+            if (!currentItem) return;
+            let name = safeString(currentItem['Название']);
+            if (!cart[name]) cart[name] = selectedQty;
+            else cart[name] += selectedQty;
+            
+            tg.HapticFeedback.impactOccurred('medium');
+            closeModal();
+            updateCartBar();
         }
 
         function changeSlide(direction) {
@@ -277,13 +328,45 @@
             }
         }
 
-        function buy(name) {
-            tg.HapticFeedback.impactOccurred('medium'); 
-            tg.MainButton.text = "ОФОРМИТЬ ЗАКАЗ: " + name;
-            tg.MainButton.color = tg.themeParams.button_color || "#000000";
-            tg.MainButton.textColor = tg.themeParams.button_text_color || "#ffffff";
-            tg.MainButton.show();
-            tg.MainButton.onClick(() => { tg.sendData(name); });
+        function updateCartBar() {
+            let totalItems = 0;
+            let totalPriceCalc = 0;
+
+            for (let name in cart) {
+                let qty = cart[name];
+                totalItems += qty;
+                // Пытаемся найти цену товара по имени
+                let found = allProducts.find(p => safeString(p['Название']) === name);
+                if (found && found['Цена']) {
+                    let pVal = parseInt(String(found['Цена']).replace(/[^0-9]/g, '')) || 0;
+                    totalPriceCalc += pVal * qty;
+                }
+            }
+
+            let cartBar = document.getElementById('cartBar');
+            if (totalItems > 0) {
+                cartBar.style.display = 'flex';
+                document.getElementById('cartCountText').textContent = `Товаров: ${totalItems} шт.`;
+                document.getElementById('cartTotalText').textContent = totalPriceCalc > 0 ? `${totalPriceCalc} ₽` : 'Заказ корзины';
+            } else {
+                cartBar.style.display = 'none';
+            }
+        }
+
+        function checkout() {
+            tg.HapticFeedback.impactOccurred('heavy');
+            
+            // Формируем детальное текстовое сообщение для отправки боту в личку
+            let message = "🛍 Новый заказ из каталога:\n\n";
+            for (let name in cart) {
+                let qty = cart[name];
+                let found = allProducts.find(p => safeString(p['Название']) === name);
+                let priceStr = (found && found['Цена']) ? ` — ${found['Цена']}` : '';
+                message += `▪️ ${name} — ${qty} шт.${priceStr}\n`;
+            }
+            
+            // Отправляем данные боту и закрываем приложение
+            tg.sendData(message);
         }
 
         loadProducts();
