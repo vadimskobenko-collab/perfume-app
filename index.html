@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gagarin Parfum</title>
-    <!-- Подключаем Telegram Web App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Красивый шрифт для витрины -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -23,136 +21,43 @@
             font-family: 'Montserrat', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            /* Красивое выравнивание всего сайта по центру */
             margin: 0 auto;
             padding: 0;
             max-width: 500px;
-            text-align: center;
+            text-align: center; /* Центрируем всё */
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Шапка */
-        header {
-            padding: 20px 15px 10px;
-            display: flex;
-            justify-content: center;
-        }
+        header { padding: 20px 15px 10px; display: flex; justify-content: center; }
         h1 { margin: 0; font-size: 24px; font-weight: 700; }
 
-        /* Лента категорий по центру */
         .categories-wrapper {
-            position: sticky;
-            top: 0;
-            background: var(--bg-color);
-            padding: 10px 15px;
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            position: sticky; top: 0; background: var(--bg-color); padding: 10px 15px;
+            z-index: 100; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;
         }
         
         .category-btn {
-            background: var(--card-bg);
-            color: var(--text-color);
-            border: 1px solid var(--hint-color);
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s ease;
+            background: var(--card-bg); color: var(--text-color); border: 1px solid var(--hint-color);
+            padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
         }
-        .category-btn.active {
-            background: var(--btn-bg);
-            color: var(--btn-text);
-            border-color: var(--btn-bg);
-        }
+        .category-btn.active { background: var(--btn-bg); color: var(--btn-text); border-color: var(--btn-bg); }
 
-        /* Сетка товаров */
-        .catalog {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            padding: 15px;
-            justify-items: center;
-        }
+        .catalog { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; justify-items: center; }
 
-        /* Карточка товара с центрированием текста */
         .product-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            align-items: center;
-            text-align: center;
+            background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; width: 100%; align-items: center; text-align: center;
         }
-        .product-img {
-            width: 100%;
-            aspect-ratio: 1; 
-            object-fit: cover;
-            background-color: #f0f0f0;
-        }
-        .product-info {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex-grow: 1;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .product-title {
-            font-size: 14px;
-            font-weight: 700;
-            margin: 0 0 6px;
-            line-height: 1.2;
-        }
-        .product-desc {
-            font-size: 11px;
-            color: var(--hint-color);
-            margin: 0 0 12px;
-            flex-grow: 1;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .product-bottom {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-top: auto;
-            width: 100%;
-        }
-        .product-price {
-            font-size: 15px;
-            font-weight: 700;
-        }
-        .buy-btn {
-            background: var(--btn-bg);
-            color: var(--btn-text);
-            border: none;
-            width: 100%;
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+        .product-img { width: 100%; aspect-ratio: 1; object-fit: cover; background-color: #f0f0f0; }
+        .product-info { padding: 12px; display: flex; flex-direction: column; align-items: center; flex-grow: 1; width: 100%; box-sizing: border-box; }
+        .product-title { font-size: 14px; font-weight: 700; margin: 0 0 6px; line-height: 1.2; }
+        .product-desc { font-size: 11px; color: var(--hint-color); margin: 0 0 12px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .product-bottom { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: auto; width: 100%; }
+        .product-price { font-size: 15px; font-weight: 700; }
+        .buy-btn { background: var(--btn-bg); color: var(--btn-text); border: none; width: 100%; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
 
-        .loading {
-            grid-column: span 2;
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--hint-color);
-            font-size: 14px;
-        }
+        .loading { grid-column: span 2; text-align: center; padding: 40px 20px; font-size: 14px; }
+        .error-log { color: #d9534f; text-align: left; background: #fdf0f0; padding: 15px; border-radius: 12px; font-family: monospace; font-size: 12px; border: 1px solid #d9534f; word-break: break-all;}
     </style>
 </head>
 <body>
@@ -164,11 +69,10 @@
     <div class="categories-wrapper" id="categories"></div>
 
     <div class="catalog" id="catalog">
-        <div class="loading">⏳ Загружаем роскошные ароматы...</div>
+        <div class="loading">⏳ Загружаем базу данных...</div>
     </div>
 
     <script>
-        // ВОТ ТВОЯ НОВАЯ ССЫЛКА НА ТАБЛИЦУ
         const GOOGLE_URL = 'https://script.google.com/macros/s/AKfycbzJtg9Ot5Nz3pB7lLSL_ARx1MMa8FXbDnHH7uOCtm_44TXz0C7q1S3cAVe9dyyVX4DA/exec';
 
         let tg = window.Telegram.WebApp;
@@ -180,33 +84,51 @@
 
         async function loadProducts() {
             try {
-                let response = await fetch(GOOGLE_URL);
-                allProducts = await response.json();
+                // Пытаемся скачать данные, включив режим перехода по редиректам
+                let response = await fetch(GOOGLE_URL, { redirect: "follow" });
+                
+                if (!response.ok) {
+                    throw new Error("HTTP Статус: " + response.status);
+                }
+
+                // Сначала читаем ответ как обычный текст, чтобы понять, что нам отдал Гугл
+                let textData = await response.text();
+                
+                // Пробуем расшифровать этот текст как базу данных (JSON)
+                try {
+                    allProducts = JSON.parse(textData);
+                } catch (parseError) {
+                    // Если Гугл отдал не JSON (например, HTML с ошибкой авторизации), выводим этот текст
+                    throw new Error("Гугл отдал не товары! Вот ответ Гугла: " + textData.substring(0, 150) + "...");
+                }
                 
                 renderCategories();
                 renderCatalog('Все');
             } catch (e) {
-                document.getElementById('catalog').innerHTML = '<div class="loading">❌ Ошибка загрузки данных. Проверьте доступы к Google Таблице.</div>';
+                // Если сломалось само подключение (например, CORS блокировка)
+                document.getElementById('catalog').innerHTML = `
+                    <div class="error-log">
+                        <b>❌ Сбой подключения к таблице:</b><br><br>
+                        ${e.message}
+                        <br><br>
+                        <i>Сделай скриншот этого красного окна и пришли мне!</i>
+                    </div>
+                `;
             }
         }
 
         function renderCategories() {
             let categoriesDiv = document.getElementById('categories');
             categoriesDiv.innerHTML = '';
-
             let categories = ['Все'];
             allProducts.forEach(item => {
                 let cat = item['Категория'] ? item['Категория'].trim() : '';
-                if (cat && !categories.includes(cat)) {
-                    categories.push(cat);
-                }
+                if (cat && !categories.includes(cat)) { categories.push(cat); }
             });
-
             categories.forEach(cat => {
                 let btn = document.createElement('button');
                 btn.className = 'category-btn' + (cat === activeCategory ? ' active' : '');
                 btn.textContent = cat;
-                
                 btn.onclick = () => {
                     tg.HapticFeedback.impactOccurred('light'); 
                     document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
@@ -221,11 +143,8 @@
         function renderCatalog(category) {
             let catalogDiv = document.getElementById('catalog');
             catalogDiv.innerHTML = '';
-
-            let filtered = category === 'Все' 
-                ? allProducts 
-                : allProducts.filter(item => (item['Категория'] || '').trim() === category);
-
+            let filtered = category === 'Все' ? allProducts : allProducts.filter(item => (item['Категория'] || '').trim() === category);
+            
             if (filtered.length === 0) {
                 catalogDiv.innerHTML = '<div class="loading">В этой категории пока нет товаров.</div>';
                 return;
@@ -234,7 +153,6 @@
             filtered.forEach(item => {
                 let price = item['Цена'] ? item['Цена'] : 'Цена по запросу';
                 let imgUrl = item['Ссылка_на_фото'] ? item['Ссылка_на_фото'] : 'https://via.placeholder.com/300?text=Нет+фото';
-                
                 let card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
@@ -258,10 +176,7 @@
             tg.MainButton.color = tg.themeParams.button_color || "#000000";
             tg.MainButton.textColor = tg.themeParams.button_text_color || "#ffffff";
             tg.MainButton.show();
-            
-            tg.MainButton.onClick(() => {
-                tg.sendData(name);
-            });
+            tg.MainButton.onClick(() => { tg.sendData(name); });
         }
 
         loadProducts();
