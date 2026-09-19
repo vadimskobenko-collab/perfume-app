@@ -22,7 +22,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0 auto;
-            padding: 0 0 90px 0; /* Отступ снизу для плавающей панели корзины */
+            padding: 0 0 90px 0;
             max-width: 500px;
             text-align: center;
             -webkit-font-smoothing: antialiased;
@@ -44,7 +44,6 @@
 
         .catalog { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; justify-items: center; }
 
-        /* Карточка товара 3:4 */
         .product-card {
             background: var(--card-bg); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
             display: flex; flex-direction: column; width: 100%; text-align: left; cursor: pointer;
@@ -66,7 +65,6 @@
         
         .action-btn { background: var(--btn-bg); color: var(--btn-text); border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-        /* Плавающая панель корзины внизу */
         .cart-bar {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 500px; background: var(--card-bg); box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
@@ -77,7 +75,6 @@
         .cart-count { font-size: 12px; color: var(--hint-color); }
         .cart-total { font-size: 16px; font-weight: 700; }
 
-        /* Модальное окно */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
@@ -98,10 +95,9 @@
         .modal-title { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
         .modal-desc { font-size: 13px; color: var(--hint-color); margin: 0 0 15px; line-height: 1.4; }
         
-        /* Счетчик кратности 5 */
-        .counter-container { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .counter-btn { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--hint-color); width: 36px; height: 36px; border-radius: 50%; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .counter-value { font-size: 16px; font-weight: 700; min-width: 40px; text-align: center; }
+        .counter-container { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .counter-btn { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--hint-color); width: 40px; height: 40px; border-radius: 50%; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .counter-value { font-size: 18px; font-weight: 700; min-width: 60px; text-align: center; }
 
         .modal-footer { display: flex; justify-content: space-between; align-items: center; }
         .modal-price { font-size: 18px; font-weight: 700; }
@@ -124,7 +120,7 @@
     <!-- Плавающая панель корзины -->
     <div class="cart-bar" id="cartBar">
         <div class="cart-info">
-            <div class="cart-count" id="cartCountText">В корзине 0 товаров</div>
+            <div class="cart-count" id="cartCountText">Общий объем: 0 мл</div>
             <div class="cart-total" id="cartTotalText">0 ₽</div>
         </div>
         <button class="action-btn" style="padding: 12px 24px; font-size: 14px;" onclick="checkout()">Оформить заказ</button>
@@ -143,10 +139,10 @@
                 <h2 class="modal-title" id="modalTitle"></h2>
                 <p class="modal-desc" id="modalDesc"></p>
                 
-                <div style="font-size: 12px; color: var(--hint-color); margin-bottom: 5px;">Количество (кратно 5):</div>
+                <div style="font-size: 12px; color: var(--hint-color); margin-bottom: 5px;">Объем (мл):</div>
                 <div class="counter-container">
                     <button class="counter-btn" onclick="updateModalQty(-5)">−</button>
-                    <span class="counter-value" id="modalQty">5</span>
+                    <span class="counter-value" id="modalQty">5 мл</span>
                     <button class="counter-btn" onclick="updateModalQty(5)">+</button>
                 </div>
 
@@ -167,7 +163,7 @@
 
         let allProducts = [];
         let activeCategory = 'Все';
-        let cart = {}; // Ключ: название товара, Значение: количество
+        let cart = {}; // Ключ: название товара, Значение: объем в мл
 
         let currentPhotos = [];
         let currentSlideIndex = 0;
@@ -251,7 +247,7 @@
                         <p class="product-desc">${desc}</p>
                         <div class="product-bottom">
                             <span class="product-price">${price}</span>
-                            <button class="action-btn" onclick="event.stopPropagation(); quickAdd('${name.replace(/'/g, "\\'")}')">+ В корзину</button>
+                            <button class="action-btn" onclick="event.stopPropagation(); quickAdd('${name.replace(/'/g, "\\'")}')">+ 5 мл</button>
                         </div>
                     </div>
                 `;
@@ -280,7 +276,7 @@
             document.getElementById('modalTitle').textContent = name;
             document.getElementById('modalDesc').textContent = desc;
             document.getElementById('modalPrice').textContent = price;
-            document.getElementById('modalQty').textContent = selectedQty;
+            document.getElementById('modalQty').textContent = selectedQty + ' мл';
             
             updateSlide();
             document.getElementById('productModal').style.display = 'flex';
@@ -292,8 +288,8 @@
 
         function updateModalQty(delta) {
             selectedQty += delta;
-            if (selectedQty < 5) selectedQty = 5;
-            document.getElementById('modalQty').textContent = selectedQty;
+            if (selectedQty < 5) selectedQty = 5; // Минимум 5 мл
+            document.getElementById('modalQty').textContent = selectedQty + ' мл';
             tg.HapticFeedback.impactOccurred('light');
         }
 
@@ -329,24 +325,23 @@
         }
 
         function updateCartBar() {
-            let totalItems = 0;
+            let totalMl = 0;
             let totalPriceCalc = 0;
 
             for (let name in cart) {
-                let qty = cart[name];
-                totalItems += qty;
-                // Пытаемся найти цену товара по имени
+                let ml = cart[name];
+                totalMl += ml;
                 let found = allProducts.find(p => safeString(p['Название']) === name);
                 if (found && found['Цена']) {
                     let pVal = parseInt(String(found['Цена']).replace(/[^0-9]/g, '')) || 0;
-                    totalPriceCalc += pVal * qty;
+                    totalPriceCalc += pVal * (ml / 5);
                 }
             }
 
             let cartBar = document.getElementById('cartBar');
-            if (totalItems > 0) {
+            if (totalMl > 0) {
                 cartBar.style.display = 'flex';
-                document.getElementById('cartCountText').textContent = `Товаров: ${totalItems} шт.`;
+                document.getElementById('cartCountText').textContent = `Общий объем: ${totalMl} мл`;
                 document.getElementById('cartTotalText').textContent = totalPriceCalc > 0 ? `${totalPriceCalc} ₽` : 'Заказ корзины';
             } else {
                 cartBar.style.display = 'none';
@@ -356,17 +351,17 @@
         function checkout() {
             tg.HapticFeedback.impactOccurred('heavy');
             
-            // Формируем детальное текстовое сообщение для отправки боту в личку
             let message = "🛍 Новый заказ из каталога:\n\n";
             for (let name in cart) {
-                let qty = cart[name];
+                let ml = cart[name];
                 let found = allProducts.find(p => safeString(p['Название']) === name);
                 let priceStr = (found && found['Цена']) ? ` — ${found['Цена']}` : '';
-                message += `▪️ ${name} — ${qty} шт.${priceStr}\n`;
+                message += `▪️ ${name} — ${ml} мл${priceStr}\n`;
             }
             
-            // Отправляем данные боту и закрываем приложение
-            tg.sendData(message);
+            // Открывает чат с менеджером @GAGARIN_PARFUME_SHOP с предзаполненным текстом заказа
+            let encodedMessage = encodeURIComponent(message);
+            window.open(`https://t.me/GAGARIN_PARFUME_SHOP?text=${encodedMessage}`, '_blank');
         }
 
         loadProducts();
