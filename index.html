@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Премиальный акционный баннер</title>
+  <title>Баннер и Каталог Ароматов</title>
   <style>
     * {
       margin: 0;
@@ -21,15 +21,14 @@
       padding: 20px;
     }
 
-    /* Контейнер баннера */
+    /* Главный баннер */
     .promo-banner {
       width: 100%;
       max-width: 850px;
-      /* Глубокий градиент черного */
       background: linear-gradient(145deg, #141416 0%, #09090a 50%, #18181c 100%);
       border: 1px solid rgba(212, 175, 55, 0.35);
       border-radius: 20px;
-      padding: 60px 40px;
+      padding: 50px 30px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -37,7 +36,6 @@
                   inset 0 0 40px rgba(212, 175, 55, 0.05);
     }
 
-    /* Мягкое фоновое золотое свечение (без картинок) */
     .promo-banner::before {
       content: '';
       position: absolute;
@@ -49,14 +47,12 @@
       pointer-events: none;
     }
 
-    /* Эффект металлизированного золота для текста */
     .gold-text {
       background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    /* Бейдж акции */
     .promo-badge {
       display: inline-block;
       font-size: 13px;
@@ -67,26 +63,44 @@
       border-radius: 50px;
       border: 1px solid #D4AF37;
       background: rgba(212, 175, 55, 0.08);
-      margin-bottom: 24px;
-    }
-
-    /* Главный заголовок */
-    .promo-title {
-      font-size: 44px;
-      font-weight: 800;
-      line-height: 1.2;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
       margin-bottom: 20px;
     }
 
-    /* Описание акции */
+    .promo-title {
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .price-block {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .old-price {
+      font-size: 28px;
+      color: #777777;
+      text-decoration: line-through;
+      font-weight: 500;
+    }
+
+    .new-price {
+      font-size: 48px;
+      font-weight: 900;
+    }
+
     .promo-description {
       color: #d1d1d1;
-      font-size: 18px;
+      font-size: 17px;
       line-height: 1.6;
-      max-width: 620px;
-      margin: 0 auto 36px auto;
+      max-width: 640px;
+      margin: 0 auto 32px auto;
       font-weight: 300;
     }
 
@@ -95,7 +109,7 @@
       font-weight: 600;
     }
 
-    /* Золотая кнопка */
+    /* Кнопка открытия каталога */
     .promo-btn {
       display: inline-block;
       padding: 18px 48px;
@@ -108,9 +122,8 @@
       background-size: 200% auto;
       border: none;
       border-radius: 50px;
-      text-decoration: none;
       cursor: pointer;
-      transition: all 0.4s ease;
+      transition: all 0.3s ease;
       box-shadow: 0 10px 25px rgba(179, 135, 40, 0.3);
     }
 
@@ -120,34 +133,225 @@
       box-shadow: 0 15px 35px rgba(179, 135, 40, 0.5);
     }
 
-    /* Адаптивность для мобильных */
+    /* ВСПЛЫВАЮЩИЙ КАТАЛОГ */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    .catalog-modal {
+      background: #141416;
+      border: 1px solid #D4AF37;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      color: #888;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .modal-close:hover { color: #fff; }
+
+    /* Счетчик набранного объема */
+    .volume-tracker {
+      background: #09090a;
+      border: 1px solid #333;
+      padding: 15px;
+      border-radius: 12px;
+      margin: 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .volume-tracker strong {
+      color: #FCF6BA;
+      font-size: 18px;
+    }
+
+    /* Сетка товаров в каталоге */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .catalog-item {
+      background: #09090a;
+      border: 1px solid #2a2a30;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .item-title {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .item-volume {
+      color: #888;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .add-btn {
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid #D4AF37;
+      color: #FCF6BA;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+    }
+
+    .add-btn:hover {
+      background: #D4AF37;
+      color: #000;
+    }
+
     @media (max-width: 768px) {
-      .promo-banner {
-        padding: 40px 20px;
-      }
-      .promo-title {
-        font-size: 28px;
-      }
-      .promo-description {
-        font-size: 15px;
-      }
-      .promo-btn {
-        width: 100%;
-        padding: 16px 20px;
-      }
+      .promo-banner { padding: 35px 20px; }
+      .promo-title { font-size: 25px; }
+      .new-price { font-size: 36px; }
+      .old-price { font-size: 22px; }
+      .promo-description { font-size: 15px; }
+      .promo-btn { width: 100%; padding: 16px 20px; }
+      .catalog-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
+  <!-- БАННЕР -->
   <div class="promo-banner">
-    <span class="promo-badge gold-text">Специальное предложение</span>
-    <h1 class="promo-title gold-text">Закрытая распродажа</h1>
+    <span class="promo-badge gold-text">Эксклюзивный сет</span>
+    
+    <h1 class="promo-title gold-text">Специальное предложение на сеты</h1>
+    
+    <div class="price-block">
+      <span class="old-price">150 ₽</span>
+      <span class="new-price gold-text">100 ₽</span>
+    </div>
+
     <p class="promo-description">
-      Получите эксклюзивную скидку <strong>30%</strong> на весь ассортимент товаров и услуг. Предложение ограничено и действует только до конца текущей недели.
+      Выбирайте любые ароматы из нашей коллекции. При общем объёме заказа <strong>от 100 мл</strong> итоговая стоимость составит всего <strong>100 ₽</strong>. Сочетайте любимые ноты в любых пропорциях!
     </p>
-    <a href="#" class="promo-btn">Принять участие</a>
+
+    <button class="promo-btn" id="openCatalogBtn">Открыть каталог</button>
   </div>
+
+  <!-- КАТАЛОГ (МОДАЛЬНОЕ ОКНО) -->
+  <div class="modal-overlay" id="catalogOverlay">
+    <div class="catalog-modal">
+      <span class="modal-close" id="closeCatalogBtn">&times;</span>
+      
+      <h2 class="gold-text" style="font-size: 26px; text-align: center;">Каталог ароматов</h2>
+      <p style="color: #aaa; font-size: 14px; text-align: center; margin-top: 5px;">
+        Выбирайте любые позиции, чтобы набрать от 100 мл
+      </p>
+
+      <!-- Индикатор объема -->
+      <div class="volume-tracker">
+        <span style="color: #ccc;">Суммарный объём:</span>
+        <div><strong id="currentVolume">0</strong> <span style="color: #888;">/ 100 мл</span></div>
+      </div>
+
+      <!-- Карточки товаров -->
+      <div class="catalog-grid">
+        <div class="catalog-item">
+          <div class="item-title">Fleur Narcotique</div>
+          <div class="item-volume">Объём: 30 мл</div>
+          <button class="add-btn" onclick="addVolume(30)">+ Добавить (30 мл)</button>
+        </div>
+
+        <div class="catalog-item">
+          <div class="item-title">Baccarat Rouge 540</div>
+          <div class="item-volume">Объём: 50 мл</div>
+          <button class="add-btn" onclick="addVolume(50)">+ Добавить (50 мл)</button>
+        </div>
+
+        <div class="catalog-item">
+          <div class="item-title">Tom Ford Lost Cherry</div>
+          <div class="item-volume">Объём: 30 мл</div>
+          <button class="add-btn" onclick="addVolume(30)">+ Добавить (30 мл)</button>
+        </div>
+
+        <div class="catalog-item">
+          <div class="item-title">Creed Aventus</div>
+          <div class="item-volume">Объём: 50 мл</div>
+          <button class="add-btn" onclick="addVolume(50)">+ Добавить (50 мл)</button>
+        </div>
+      </div>
+
+      <button class="promo-btn" style="width: 100%;" id="checkoutBtn" onclick="finishOrder()">Оформить сет (100 ₽)</button>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('catalogOverlay');
+    const openBtn = document.getElementById('openCatalogBtn');
+    const closeBtn = document.getElementById('closeCatalogBtn');
+    let totalVolume = 0;
+
+    // Открыть каталог
+    openBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+    });
+
+    // Закрыть каталог
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // Прибавление объема
+    function addVolume(ml) {
+      totalVolume += ml;
+      document.getElementById('currentVolume').innerText = totalVolume;
+      
+      if (totalVolume >= 100) {
+        document.getElementById('currentVolume').style.color = '#55ff55';
+      }
+    }
+
+    // Завершение заказа
+    function finishOrder() {
+      if (totalVolume < 100) {
+        alert(`Вы выбырали ${totalVolume} мл. Добавьте ещё ${100 - totalVolume} мл, чтобы получить скидку и зафиксировать цену 100 ₽!`);
+      } else {
+        alert(`Отлично! Вы собрали сет на ${totalVolume} мл. Итоговая цена: 100 ₽!`);
+        modal.style.display = 'none';
+        totalVolume = 0;
+        document.getElementById('currentVolume').innerText = 0;
+      }
+    }
+  </script>
 
 </body>
 </html>
