@@ -46,10 +46,10 @@
 
         .product-card {
             background: var(--card-bg); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            display: flex; flex-direction: column; width: 100%; text-align: left; cursor: pointer;
+            display: flex; flex-direction: column; width: 100%; text-align: left;
         }
         .product-img-container {
-            width: 100%; aspect-ratio: 3 / 4; position: relative; background-color: #f0f0f0;
+            width: 100%; aspect-ratio: 3 / 4; position: relative; background-color: #f0f0f0; cursor: pointer;
         }
         .product-img { width: 100%; height: 100%; object-fit: cover; }
         .photo-badge {
@@ -58,12 +58,15 @@
         }
 
         .product-info { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
-        .product-title { font-size: 13px; font-weight: 700; margin: 0 0 4px; line-height: 1.2; }
+        .product-title { font-size: 13px; font-weight: 700; margin: 0 0 4px; line-height: 1.2; cursor: pointer; }
         .product-desc { font-size: 11px; color: var(--hint-color); margin: 0 0 8px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .product-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
-        .product-price { font-size: 14px; font-weight: 700; }
+        .product-price { font-size: 13px; font-weight: 700; }
         
-        .action-btn { background: var(--btn-bg); color: var(--btn-text); border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        /* Кнопки плюс/минус прямо в карточке */
+        .card-counter { display: flex; align-items: center; background: var(--bg-color); border-radius: 8px; overflow: hidden; border: 1px solid var(--hint-color); }
+        .card-cnt-btn { background: none; border: none; padding: 4px 8px; font-size: 14px; font-weight: 700; cursor: pointer; color: var(--text-color); }
+        .card-cnt-val { font-size: 12px; font-weight: 700; padding: 0 2px; min-width: 32px; text-align: center; }
 
         .cart-bar {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
@@ -74,6 +77,7 @@
         .cart-info { text-align: left; }
         .cart-count { font-size: 12px; color: var(--hint-color); }
         .cart-total { font-size: 16px; font-weight: 700; }
+        .action-btn { background: var(--btn-bg); color: var(--btn-text); border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
 
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -123,7 +127,7 @@
             <div class="cart-count" id="cartCountText">Общий объем: 0 мл</div>
             <div class="cart-total" id="cartTotalText">0 ₽</div>
         </div>
-        <button class="action-btn" style="padding: 12px 24px; font-size: 14px;" onclick="checkout()">Оформить заказ</button>
+        <button class="action-btn" onclick="checkout()">Оформить заказ</button>
     </div>
 
     <!-- Модальное окно товара -->
@@ -139,7 +143,7 @@
                 <h2 class="modal-title" id="modalTitle"></h2>
                 <p class="modal-desc" id="modalDesc"></p>
                 
-                <div style="font-size: 12px; color: var(--hint-color); margin-bottom: 5px;">Объем (мл):</div>
+                <div style="font-size: 12px; color: var(--hint-color); margin-bottom: 5px;">Выберите объем (мл):</div>
                 <div class="counter-container">
                     <button class="counter-btn" onclick="updateModalQty(-5)">−</button>
                     <span class="counter-value" id="modalQty">5 мл</span>
@@ -148,7 +152,7 @@
 
                 <div class="modal-footer">
                     <span class="modal-price" id="modalPrice"></span>
-                    <button class="action-btn" id="modalAddBtn" style="padding: 10px 20px; font-size: 14px;" onclick="addCurrentToCart()">В корзину</button>
+                    <button class="action-btn" style="padding: 10px 20px; font-size: 14px;" onclick="addModalToCart()">В корзину</button>
                 </div>
             </div>
         </div>
@@ -227,27 +231,37 @@
             filtered.forEach(item => {
                 let name = safeString(item['Название']) || 'Без названия';
                 let desc = safeString(item['Описание']);
-                let price = safeString(item['Цена']) || 'По запросу';
+                let priceRaw = safeString(item['Цена']) || '0';
+                let priceNum = parseInt(priceRaw.replace(/[^0-9]/g, '')) || 0;
                 
                 let rawPhotos = safeString(item['Ссылка_на_фото']);
                 let photos = rawPhotos ? rawPhotos.split(',').map(p => p.trim()).filter(p => p) : ['https://via.placeholder.com/300?text=Нет+фото'];
                 let mainPhoto = photos[0];
 
+                let currentMl = cart[name] || 0;
+
                 let card = document.createElement('div');
                 card.className = 'product-card';
-                card.onclick = () => openModal(item, photos);
 
                 card.innerHTML = `
-                    <div class="product-img-container">
+                    <div class="product-img-container" onclick="openModal('${name.replace(/'/g, "\\'")}')">
                         <img src="${mainPhoto}" alt="${name}" class="product-img">
                         ${photos.length > 1 ? `<span class="photo-badge">📷 ${photos.length}</span>` : ''}
                     </div>
                     <div class="product-info">
-                        <h3 class="product-title">${name}</h3>
+                        <h3 class="product-title" onclick="openModal('${name.replace(/'/g, "\\'")}')">${name}</h3>
                         <p class="product-desc">${desc}</p>
                         <div class="product-bottom">
-                            <span class="product-price">${price}</span>
-                            <button class="action-btn" onclick="event.stopPropagation(); quickAdd('${name.replace(/'/g, "\\'")}')">+ 5 мл</button>
+                            <span class="product-price">${priceNum} ₽/мл</span>
+                            <div class="card-counter" id="counter-${CSS.escape(name)}">
+                                ${currentMl === 0 ? `
+                                    <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="changeCartQty('${name.replace(/'/g, "\\'")}', 5)">+ 5 мл</button>
+                                ` : `
+                                    <button class="card-cnt-btn" onclick="changeCartQty('${name.replace(/'/g, "\\'")}', -5)">−</button>
+                                    <span class="card-cnt-val">${currentMl} мл</span>
+                                    <button class="card-cnt-btn" onclick="changeCartQty('${name.replace(/'/g, "\\'")}', 5)">+</button>
+                                `}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -255,27 +269,38 @@
             });
         }
 
-        function quickAdd(name) {
+        function changeCartQty(name, delta) {
             tg.HapticFeedback.impactOccurred('light');
-            if (!cart[name]) cart[name] = 5;
-            else cart[name] += 5;
+            if (!cart[name]) cart[name] = 0;
+            cart[name] += delta;
+            
+            if (cart[name] <= 0) {
+                delete cart[name];
+            }
+            
+            renderCatalog(activeCategory);
             updateCartBar();
         }
 
-        function openModal(item, photos) {
+        function openModal(name) {
+            let item = allProducts.find(p => safeString(p['Название']) === name);
+            if (!item) return;
+
             tg.HapticFeedback.impactOccurred('light');
             currentItem = item;
-            currentPhotos = photos;
+            
+            let rawPhotos = safeString(item['Ссылка_на_фото']);
+            currentPhotos = rawPhotos ? rawPhotos.split(',').map(p => p.trim()).filter(p => p) : ['https://via.placeholder.com/300?text=Нет+фото'];
             currentSlideIndex = 0;
-            selectedQty = 5;
+            selectedQty = cart[name] || 5; // Если уже в корзине, показываем текущий объем
 
-            let name = safeString(item['Название']) || 'Без названия';
             let desc = safeString(item['Описание']) || 'Описание отсутствует';
-            let price = safeString(item['Цена']) || 'По запросу';
+            let priceRaw = safeString(item['Цена']) || '0';
+            let priceNum = parseInt(priceRaw.replace(/[^0-9]/g, '')) || 0;
 
             document.getElementById('modalTitle').textContent = name;
             document.getElementById('modalDesc').textContent = desc;
-            document.getElementById('modalPrice').textContent = price;
+            document.getElementById('modalPrice').textContent = (priceNum * selectedQty) + ' ₽';
             document.getElementById('modalQty').textContent = selectedQty + ' мл';
             
             updateSlide();
@@ -288,19 +313,24 @@
 
         function updateModalQty(delta) {
             selectedQty += delta;
-            if (selectedQty < 5) selectedQty = 5; // Минимум 5 мл
+            if (selectedQty < 5) selectedQty = 5; 
+            
+            let priceRaw = safeString(currentItem['Цена']) || '0';
+            let priceNum = parseInt(priceRaw.replace(/[^0-9]/g, '')) || 0;
+
             document.getElementById('modalQty').textContent = selectedQty + ' мл';
+            document.getElementById('modalPrice').textContent = (priceNum * selectedQty) + ' ₽';
             tg.HapticFeedback.impactOccurred('light');
         }
 
-        function addCurrentToCart() {
+        function addModalToCart() {
             if (!currentItem) return;
             let name = safeString(currentItem['Название']);
-            if (!cart[name]) cart[name] = selectedQty;
-            else cart[name] += selectedQty;
+            cart[name] = selectedQty;
             
             tg.HapticFeedback.impactOccurred('medium');
             closeModal();
+            renderCatalog(activeCategory);
             updateCartBar();
         }
 
@@ -334,7 +364,7 @@
                 let found = allProducts.find(p => safeString(p['Название']) === name);
                 if (found && found['Цена']) {
                     let pVal = parseInt(String(found['Цена']).replace(/[^0-9]/g, '')) || 0;
-                    totalPriceCalc += pVal * (ml / 5);
+                    totalPriceCalc += pVal * ml; // Умножаем цену за 1 мл на количество миллилитров
                 }
             }
 
@@ -342,7 +372,7 @@
             if (totalMl > 0) {
                 cartBar.style.display = 'flex';
                 document.getElementById('cartCountText').textContent = `Общий объем: ${totalMl} мл`;
-                document.getElementById('cartTotalText').textContent = totalPriceCalc > 0 ? `${totalPriceCalc} ₽` : 'Заказ корзины';
+                document.getElementById('cartTotalText').textContent = totalPriceCalc + ' ₽';
             } else {
                 cartBar.style.display = 'none';
             }
@@ -352,14 +382,20 @@
             tg.HapticFeedback.impactOccurred('heavy');
             
             let message = "🛍 Новый заказ из каталога:\n\n";
+            let grandTotal = 0;
+
             for (let name in cart) {
                 let ml = cart[name];
                 let found = allProducts.find(p => safeString(p['Название']) === name);
-                let priceStr = (found && found['Цена']) ? ` — ${found['Цена']}` : '';
-                message += `▪️ ${name} — ${ml} мл${priceStr}\n`;
+                let pVal = (found && found['Цена']) ? parseInt(String(found['Цена']).replace(/[^0-9]/g, '')) || 0 : 0;
+                let itemTotal = pVal * ml;
+                grandTotal += itemTotal;
+
+                message += `▪️ ${name} — ${ml} мл (${itemTotal} ₽)\n`;
             }
             
-            // Открывает чат с менеджером @GAGARIN_PARFUME_SHOP с предзаполненным текстом заказа
+            message += `\nИтого: ${grandTotal} ₽`;
+
             let encodedMessage = encodeURIComponent(message);
             window.open(`https://t.me/GAGARIN_PARFUME_SHOP?text=${encodedMessage}`, '_blank');
         }
