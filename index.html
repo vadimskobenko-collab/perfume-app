@@ -43,7 +43,7 @@
             text-align: left;
             display: flex;
             align-items: center;
-            border: 1px solid rgba(212, 175, 55, 0.3); /* Легкая золотистая рамка */
+            border: 1px solid rgba(212, 175, 55, 0.3);
         }
         .promo-logo {
             width: 100px;
@@ -61,7 +61,7 @@
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #d4af37; /* Благородный золотой цвет */
+            color: #d4af37;
             margin-bottom: 4px;
         }
         .promo-text {
@@ -164,9 +164,9 @@
         <h1>Gagarin Parfum</h1>
     </header>
 
-    <!-- Баннер акции с логотипом -->
+    <!-- Баннер акции с встроенным логотипом -->
     <div class="promo-banner" id="promoBanner">
-        <img src="https://i.ibb.co/305g0h2/logo-placeholder.jpg" alt="Gagarin Logo" class="promo-logo" id="bannerLogoImg">
+        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="Gagarin Logo" class="promo-logo">
         <div class="promo-content">
             <div class="promo-title">🔥 Оптовая цена от 100 мл</div>
             <p class="promo-text" id="promoText">
@@ -273,7 +273,6 @@
             
             allProducts.forEach(item => {
                 let cat = safeString(item['Категория']);
-                if (cat && !categories.includes(cat)) { categories.pages.push(cat); } // Исправлено далее на корректное условие
                 if (cat && !categories.includes(cat)) { categories.push(cat); }
             });
 
