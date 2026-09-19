@@ -11,7 +11,6 @@
     
     <style>
         :root {
-            /* Цвета берутся из темы Телеграма пользователя */
             --bg-color: var(--tg-theme-bg-color, #f4f5f7);
             --text-color: var(--tg-theme-text-color, #222);
             --card-bg: var(--tg-theme-secondary-bg-color, #fff);
@@ -24,19 +23,23 @@
             font-family: 'Montserrat', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            margin: 0;
+            /* Выравниваем весь сайт по центру */
+            margin: 0 auto;
             padding: 0;
+            max-width: 500px;
+            text-align: center;
             -webkit-font-smoothing: antialiased;
         }
 
         /* Шапка */
         header {
             padding: 20px 15px 10px;
-            text-align: center;
+            display: flex;
+            justify-content: center;
         }
-        h1 { margin: 0; font-size: 22px; font-weight: 700; }
+        h1 { margin: 0; font-size: 24px; font-weight: 700; }
 
-        /* Лента категорий */
+        /* Лента категорий по центру */
         .categories-wrapper {
             position: sticky;
             top: 0;
@@ -44,17 +47,16 @@
             padding: 10px 15px;
             z-index: 100;
             display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
             gap: 10px;
-            overflow-x: auto;
-            scrollbar-width: none;
         }
-        .categories-wrapper::-webkit-scrollbar { display: none; }
         
         .category-btn {
             background: var(--card-bg);
             color: var(--text-color);
             border: 1px solid var(--hint-color);
-            padding: 8px 16px;
+            padding: 8px 20px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: 600;
@@ -68,47 +70,53 @@
             border-color: var(--btn-bg);
         }
 
-        /* Сетка товаров (в 2 колонки) */
+        /* Сетка товаров */
         .catalog {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 15px;
             padding: 15px;
+            justify-items: center;
         }
 
-        /* Карточка товара */
+        /* Карточка товара с центрированием текста */
         .product-card {
             background: var(--card-bg);
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
+            width: 100%;
+            align-items: center;
+            text-align: center;
         }
         .product-img {
             width: 100%;
-            aspect-ratio: 1; /* Квадратное фото */
+            aspect-ratio: 1; 
             object-fit: cover;
             background-color: #f0f0f0;
         }
         .product-info {
-            padding: 10px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
+            align-items: center;
             flex-grow: 1;
+            width: 100%;
+            box-sizing: border-box;
         }
         .product-title {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 700;
-            margin: 0 0 4px;
+            margin: 0 0 6px;
             line-height: 1.2;
         }
         .product-desc {
             font-size: 11px;
             color: var(--hint-color);
-            margin: 0 0 10px;
+            margin: 0 0 12px;
             flex-grow: 1;
-            /* Обрезаем текст на 2 строки */
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -116,26 +124,26 @@
         }
         .product-bottom {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
+            gap: 10px;
             margin-top: auto;
+            width: 100%;
         }
         .product-price {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
         }
         .buy-btn {
             background: var(--btn-bg);
             color: var(--btn-text);
             border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            font-size: 18px;
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .loading {
@@ -153,26 +161,23 @@
         <h1>Gagarin Parfum</h1>
     </header>
 
-    <!-- Блок для кнопок категорий -->
     <div class="categories-wrapper" id="categories"></div>
 
-    <!-- Блок для карточек товаров -->
     <div class="catalog" id="catalog">
         <div class="loading">⏳ Загружаем роскошные ароматы...</div>
     </div>
 
     <script>
-        // ❗️❗️❗️ НЕ ЗАБУДЬ ВСТАВИТЬ СЮДА СВОЮ ССЫЛКУ ИЗ GOOGLE ТАБЛИЦ:
-        const GOOGLE_URL = 'https://script.google.com/macros/s/AKfycbzDOq4pYY1SDKxNSeHb6nO_aBX2B6AeN_clLhc3LJ2myVI_OCNF6xzEN7pd0iWpD0mh/exec';
+        // ВСТАВЛЕНА ТВОЯ НОВАЯ ССЫЛКА
+        const GOOGLE_URL = 'https://script.google.com/macros/library/d/1tWEJvIHKZwEkkShuX33bp1ZSGFIoNkkDZVjEq6gejpeRwiG4kx501MWt/1';
 
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Открываем на весь экран
-        tg.ready();  // Сообщаем, что приложение загружено
+        tg.expand(); 
+        tg.ready();  
 
         let allProducts = [];
         let activeCategory = 'Все';
 
-        // Загрузка товаров
         async function loadProducts() {
             try {
                 let response = await fetch(GOOGLE_URL);
@@ -181,16 +186,14 @@
                 renderCategories();
                 renderCatalog('Все');
             } catch (e) {
-                document.getElementById('catalog').innerHTML = '<div class="loading">❌ Ошибка загрузки данных.</div>';
+                document.getElementById('catalog').innerHTML = '<div class="loading">❌ Ошибка загрузки данных.<br><br><small>Возможно, нужна ссылка с /exec на конце.</small></div>';
             }
         }
 
-        // Отрисовка ленты категорий
         function renderCategories() {
             let categoriesDiv = document.getElementById('categories');
             categoriesDiv.innerHTML = '';
 
-            // Собираем уникальные категории из колонки "Категория"
             let categories = ['Все'];
             allProducts.forEach(item => {
                 let cat = item['Категория'] ? item['Категория'].trim() : '';
@@ -199,14 +202,13 @@
                 }
             });
 
-            // Рисуем кнопки
             categories.forEach(cat => {
                 let btn = document.createElement('button');
                 btn.className = 'category-btn' + (cat === activeCategory ? ' active' : '');
                 btn.textContent = cat;
                 
                 btn.onclick = () => {
-                    tg.HapticFeedback.impactOccurred('light'); // Вибрация при клике
+                    tg.HapticFeedback.impactOccurred('light'); 
                     document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     activeCategory = cat;
@@ -216,12 +218,10 @@
             });
         }
 
-        // Отрисовка сетки товаров
         function renderCatalog(category) {
             let catalogDiv = document.getElementById('catalog');
             catalogDiv.innerHTML = '';
 
-            // Фильтруем по категории
             let filtered = category === 'Все' 
                 ? allProducts 
                 : allProducts.filter(item => (item['Категория'] || '').trim() === category);
@@ -231,7 +231,6 @@
                 return;
             }
 
-            // Рисуем карточки
             filtered.forEach(item => {
                 let price = item['Цена'] ? item['Цена'] : 'Цена по запросу';
                 let imgUrl = item['Ссылка_на_фото'] ? item['Ссылка_на_фото'] : 'https://via.placeholder.com/300?text=Нет+фото';
@@ -245,7 +244,7 @@
                         <p class="product-desc">${item['Описание'] || ''}</p>
                         <div class="product-bottom">
                             <span class="product-price">${price}</span>
-                            <button class="buy-btn" onclick="buy('${item['Название'].replace(/'/g, "\\'")}')">➕</button>
+                            <button class="buy-btn" onclick="buy('${item['Название'].replace(/'/g, "\\'")}')">В КОРЗИНУ</button>
                         </div>
                     </div>
                 `;
@@ -253,9 +252,8 @@
             });
         }
 
-        // Обработка кнопки покупки
         function buy(name) {
-            tg.HapticFeedback.impactOccurred('medium'); // Вибрация
+            tg.HapticFeedback.impactOccurred('medium'); 
             tg.MainButton.text = "ОФОРМИТЬ ЗАКАЗ: " + name;
             tg.MainButton.color = tg.themeParams.button_color || "#000000";
             tg.MainButton.textColor = tg.themeParams.button_text_color || "#ffffff";
@@ -266,7 +264,6 @@
             });
         }
 
-        // Запуск
         loadProducts();
     </script>
 </body>
