@@ -3,64 +3,151 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Логотип по центру</title>
+  <title>Премиальный акционный баннер</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
     }
 
     body {
-      background-color: #0f0f11;
+      background-color: #050505;
       min-height: 100vh;
-    }
-
-    /* Шапка с идеальным центрированием */
-    .header {
-      width: 100%;
-      min-height: 120px;
-      background-color: #1a1a1e;
       display: flex;
-      justify-content: center; /* По горизонтали */
-      align-items: center;     /* По вертикали */
-      padding: 20px;
-      border-bottom: 1px solid #2a2a30;
-    }
-
-    /* Ссылка-обертка */
-    .logo-link {
-      display: inline-flex;
       justify-content: center;
       align-items: center;
+      padding: 20px;
+    }
+
+    /* Контейнер баннера */
+    .promo-banner {
+      width: 100%;
+      max-width: 850px;
+      /* Глубокий градиент черного */
+      background: linear-gradient(145deg, #141416 0%, #09090a 50%, #18181c 100%);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 20px;
+      padding: 60px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9),
+                  inset 0 0 40px rgba(212, 175, 55, 0.05);
+    }
+
+    /* Мягкое фоновое золотое свечение (без картинок) */
+    .promo-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    /* Эффект металлизированного золота для текста */
+    .gold-text {
+      background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Бейдж акции */
+    .promo-badge {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      padding: 8px 24px;
+      border-radius: 50px;
+      border: 1px solid #D4AF37;
+      background: rgba(212, 175, 55, 0.08);
+      margin-bottom: 24px;
+    }
+
+    /* Главный заголовок */
+    .promo-title {
+      font-size: 44px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 20px;
+    }
+
+    /* Описание акции */
+    .promo-description {
+      color: #d1d1d1;
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 620px;
+      margin: 0 auto 36px auto;
+      font-weight: 300;
+    }
+
+    .promo-description strong {
+      color: #FCF6BA;
+      font-weight: 600;
+    }
+
+    /* Золотая кнопка */
+    .promo-btn {
+      display: inline-block;
+      padding: 18px 48px;
+      font-size: 15px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #000000;
+      background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 30%, #B38728 70%, #AA771C 100%);
+      background-size: 200% auto;
+      border: none;
+      border-radius: 50px;
       text-decoration: none;
-      transition: transform 0.2s ease;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 10px 25px rgba(179, 135, 40, 0.3);
     }
 
-    .logo-link:hover {
-      transform: scale(1.03);
+    .promo-btn:hover {
+      background-position: right center;
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(179, 135, 40, 0.5);
     }
 
-    /* Стили для SVG-логотипа */
-    .logo-svg {
-      width: 180px;      /* Настрой нужную ширину */
-      height: auto;      /* Пропорции сохраняются автоматически */
-      display: block;
+    /* Адаптивность для мобильных */
+    @media (max-width: 768px) {
+      .promo-banner {
+        padding: 40px 20px;
+      }
+      .promo-title {
+        font-size: 28px;
+      }
+      .promo-description {
+        font-size: 15px;
+      }
+      .promo-btn {
+        width: 100%;
+        padding: 16px 20px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <header class="header">
-    <a href="#" class="logo-link" aria-label="Главная">
-      <!-- Встроенный код логотипа (SVG) -->
-      <svg class="logo-svg" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="50" rx="10" fill="#3B82F6"/>
-        <path d="M30 15L45 35H15L30 15Z" fill="white"/>
-        <text x="60" y="32" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="20">LOGO</text>
-      </svg>
-    </a>
-  </header>
+  <div class="promo-banner">
+    <span class="promo-badge gold-text">Специальное предложение</span>
+    <h1 class="promo-title gold-text">Закрытая распродажа</h1>
+    <p class="promo-description">
+      Получите эксклюзивную скидку <strong>30%</strong> на весь ассортимент товаров и услуг. Предложение ограничено и действует только до конца текущей недели.
+    </p>
+    <a href="#" class="promo-btn">Принять участие</a>
+  </div>
 
 </body>
 </html>
