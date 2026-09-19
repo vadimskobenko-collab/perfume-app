@@ -23,7 +23,7 @@
             font-family: 'Montserrat', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            /* Выравниваем весь сайт по центру */
+            /* Красивое выравнивание всего сайта по центру */
             margin: 0 auto;
             padding: 0;
             max-width: 500px;
@@ -168,7 +168,7 @@
     </div>
 
     <script>
-        // ВЕРНУЛ ТВОЮ РАБОЧУЮ ССЫЛКУ С /exec
+        // ИСПРАВЛЕННАЯ ССЫЛКА
         const GOOGLE_URL = 'https://script.google.com/macros/s/AKfycbzDOq4pYY1SDKxNSeHb6nO_aBX2B6AeN_clLhc3LJ2myVI_OCNF6xzEN7pd0iWpD0mh/exec';
 
         let tg = window.Telegram.WebApp;
@@ -186,7 +186,7 @@
                 renderCategories();
                 renderCatalog('Все');
             } catch (e) {
-                document.getElementById('catalog').innerHTML = '<div class="loading">❌ Ошибка загрузки данных.</div>';
+                document.getElementById('catalog').innerHTML = '<div class="loading">❌ Ошибка загрузки данных. Проверьте доступы к Google Таблице.</div>';
             }
         }
 
