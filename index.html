@@ -168,8 +168,8 @@
     </div>
 
     <script>
-        // ВСТАВЛЕНА ТВОЯ НОВАЯ ССЫЛКА
-        const GOOGLE_URL = 'https://script.google.com/macros/library/d/1tWEJvIHKZwEkkShuX33bp1ZSGFIoNkkDZVjEq6gejpeRwiG4kx501MWt/1';
+        // ВЕРНУЛ ТВОЮ РАБОЧУЮ ССЫЛКУ С /exec
+        const GOOGLE_URL = 'https://script.google.com/macros/s/AKfycbzDOq4pYY1SDKxNSeHb6nO_aBX2B6AeN_clLhc3LJ2myVI_OCNF6xzEN7pd0iWpD0mh/exec';
 
         let tg = window.Telegram.WebApp;
         tg.expand(); 
@@ -186,7 +186,7 @@
                 renderCategories();
                 renderCatalog('Все');
             } catch (e) {
-                document.getElementById('catalog').innerHTML = '<div class="loading">❌ Ошибка загрузки данных.<br><br><small>Возможно, нужна ссылка с /exec на конце.</small></div>';
+                document.getElementById('catalog').innerHTML = '<div class="loading">❌ Ошибка загрузки данных.</div>';
             }
         }
 
