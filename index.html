@@ -1,490 +1,66 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gagarin Parfum</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-color: var(--tg-theme-bg-color, #f4f5f7);
-            --text-color: var(--tg-theme-text-color, #222);
-            --card-bg: var(--tg-theme-secondary-bg-color, #fff);
-            --btn-bg: var(--tg-theme-button-color, #000);
-            --btn-text: var(--tg-theme-button-text-color, #fff);
-            --hint-color: var(--tg-theme-hint-color, #888);
-        }
-        
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0 auto;
-            padding: 0 0 90px 0;
-            max-width: 500px;
-            text-align: center;
-            -webkit-font-smoothing: antialiased;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Логотип по центру</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        header { padding: 15px 15px 5px; display: flex; justify-content: center; }
-        h1 { margin: 0; font-size: 24px; font-weight: 700; }
+    body {
+      background-color: #0f0f11;
+      min-height: 100vh;
+    }
 
-        /* Стильный премиальный баннер с логотипом */
-        .promo-banner {
-            margin: 10px 15px;
-            border-radius: 16px;
-            overflow: hidden;
-            position: relative;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
-            color: #fff;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            text-align: left;
-            display: flex;
-            align-items: center;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-        }
-        .promo-logo {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            flex-shrink: 0;
-            border-right: 1px solid rgba(212, 175, 55, 0.2);
-        }
-        .promo-content {
-            padding: 12px 15px;
-            flex-grow: 1;
-        }
-        .promo-title {
-            font-size: 13px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #d4af37;
-            margin-bottom: 4px;
-        }
-        .promo-text {
-            font-size: 11px;
-            line-height: 1.3;
-            color: #e0e0e0;
-            margin: 0;
-        }
-        .price-strike {
-            text-decoration: line-through;
-            color: #aaa;
-            font-size: 10px;
-        }
-        .price-new {
-            color: #4cd137;
-            font-weight: 700;
-        }
+    /* Шапка с идеальным центрированием */
+    .header {
+      width: 100%;
+      min-height: 120px;
+      background-color: #1a1a1e;
+      display: flex;
+      justify-content: center; /* По горизонтали */
+      align-items: center;     /* По вертикали */
+      padding: 20px;
+      border-bottom: 1px solid #2a2a30;
+    }
 
-        .categories-wrapper {
-            position: sticky; top: 0; background: var(--bg-color); padding: 10px 15px;
-            z-index: 100; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;
-        }
-        
-        .category-btn {
-            background: var(--card-bg); color: var(--text-color); border: 1px solid var(--hint-color);
-            padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
-        }
-        .category-btn.active { background: var(--btn-bg); color: var(--btn-text); border-color: var(--btn-bg); }
+    /* Ссылка-обертка */
+    .logo-link {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
 
-        .catalog { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 15px 15px; justify-items: center; }
+    .logo-link:hover {
+      transform: scale(1.03);
+    }
 
-        .product-card {
-            background: var(--card-bg); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            display: flex; flex-direction: column; width: 100%; text-align: left;
-        }
-        .product-img-container {
-            width: 100%; aspect-ratio: 3 / 4; position: relative; background-color: #f0f0f0; cursor: pointer;
-        }
-        .product-img { width: 100%; height: 100%; object-fit: cover; }
-        .photo-badge {
-            position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff;
-            font-size: 10px; padding: 2px 6px; border-radius: 6px;
-        }
-
-        .product-info { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
-        .product-title { font-size: 13px; font-weight: 700; margin: 0 0 4px; line-height: 1.2; cursor: pointer; }
-        .product-desc { font-size: 11px; color: var(--hint-color); margin: 0 0 8px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .product-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
-        .product-price { font-size: 12px; font-weight: 700; }
-        
-        .card-counter { display: flex; align-items: center; background: var(--bg-color); border-radius: 8px; overflow: hidden; border: 1px solid var(--hint-color); }
-        .card-cnt-btn { background: none; border: none; padding: 4px 8px; font-size: 14px; font-weight: 700; cursor: pointer; color: var(--text-color); }
-        .card-cnt-val { font-size: 11px; font-weight: 700; padding: 0 2px; min-width: 30px; text-align: center; }
-
-        .cart-bar {
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 500px; background: var(--card-bg); box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-            padding: 12px 15px; box-sizing: border-box; display: none; justify-content: space-between; align-items: center; z-index: 900;
-            border-top-left-radius: 20px; border-top-right-radius: 20px;
-        }
-        .cart-info { text-align: left; }
-        .cart-count { font-size: 11px; color: var(--hint-color); }
-        .cart-total { font-size: 15px; font-weight: 700; }
-        .action-btn { background: var(--btn-bg); color: var(--btn-text); border: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
-        }
-        .modal-content {
-            background: var(--card-bg); color: var(--text-color); width: 100%; max-width: 400px;
-            border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; text-align: left; position: relative;
-        }
-        .modal-slider { width: 100%; aspect-ratio: 3 / 4; position: relative; background: #000; }
-        .modal-slider img { width: 100%; height: 100%; object-fit: contain; }
-        .slider-btn {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 50%;
-        }
-        .slider-prev { left: 10px; }
-        .slider-next { right: 10px; }
-        .modal-body { padding: 15px; overflow-y: auto; }
-        .modal-title { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
-        .modal-desc { font-size: 13px; color: var(--hint-color); margin: 0 0 15px; line-height: 1.4; }
-        
-        .counter-container { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .counter-btn { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--hint-color); width: 40px; height: 40px; border-radius: 50%; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .counter-value { font-size: 18px; font-weight: 700; min-width: 60px; text-align: center; }
-
-        .modal-footer { display: flex; justify-content: space-between; align-items: center; }
-        .modal-price { font-size: 18px; font-weight: 700; }
-        .close-modal { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); color: #fff; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; z-index: 1010; font-size: 16px; }
-
-        .loading { grid-column: span 2; text-align: center; padding: 40px 20px; font-size: 14px; }
-    </style>
+    /* Стили для SVG-логотипа */
+    .logo-svg {
+      width: 180px;      /* Настрой нужную ширину */
+      height: auto;      /* Пропорции сохраняются автоматически */
+      display: block;
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>Gagarin Parfum</h1>
-    </header>
+  <header class="header">
+    <a href="#" class="logo-link" aria-label="Главная">
+      <!-- Встроенный код логотипа (SVG) -->
+      <svg class="logo-svg" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="50" rx="10" fill="#3B82F6"/>
+        <path d="M30 15L45 35H15L30 15Z" fill="white"/>
+        <text x="60" y="32" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="20">LOGO</text>
+      </svg>
+    </a>
+  </header>
 
-    <!-- Баннер акции с встроенным логотипом -->
-    <div class="promo-banner" id="promoBanner">
-        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="Gagarin Logo" class="promo-logo">
-        <div class="promo-content">
-            <div class="promo-title">🔥 Оптовая цена от 100 мл</div>
-            <p class="promo-text" id="promoText">
-                При покупке от 100 мл любых ароматов цена: <span class="price-strike">150 ₽</span> <span class="price-new">100 ₽/мл</span>!
-            </p>
-        </div>
-    </div>
-
-    <div class="categories-wrapper" id="categories"></div>
-    <div class="catalog" id="catalog">
-        <div class="loading">⏳ Загружаем каталог...</div>
-    </div>
-
-    <!-- Плавающая панель корзины -->
-    <div class="cart-bar" id="cartBar">
-        <div class="cart-info">
-            <div class="cart-count" id="cartCountText">Общий объем: 0 мл</div>
-            <div class="cart-total" id="cartTotalText">0 ₽</div>
-        </div>
-        <button class="action-btn" onclick="checkout()">Оформить заказ</button>
-    </div>
-
-    <!-- Модальное окно товара -->
-    <div class="modal" id="productModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal()">✕</button>
-            <div class="modal-slider" id="modalSlider">
-                <img id="modalImg" src="" alt="">
-                <button class="slider-btn slider-prev" id="prevBtn" onclick="changeSlide(-1)">❮</button>
-                <button class="slider-btn slider-next" id="nextBtn" onclick="changeSlide(1)">❯</button>
-            </div>
-            <div class="modal-body">
-                <h2 class="modal-title" id="modalTitle"></h2>
-                <p class="modal-desc" id="modalDesc"></p>
-                
-                <div style="font-size: 12px; color: var(--hint-color); margin-bottom: 5px;">Выберите объем (мл):</div>
-                <div class="counter-container">
-                    <button class="counter-btn" onclick="updateModalQty(-5)">−</button>
-                    <span class="counter-value" id="modalQty">5 мл</span>
-                    <button class="counter-btn" onclick="updateModalQty(5)">+</button>
-                </div>
-
-                <div class="modal-footer">
-                    <span class="modal-price" id="modalPrice"></span>
-                    <button class="action-btn" style="padding: 10px 20px; font-size: 13px;" onclick="addModalToCart()">В корзину</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const GOOGLE_URL = 'https://script.google.com/macros/s/AKfycbzJtg9Ot5Nz3pB7lLSL_ARx1MMa8FXbDnHH7uOCtm_44TXz0C7q1S3cAVe9dyyVX4DA/exec';
-
-        let tg = window.Telegram.WebApp;
-        tg.expand(); 
-        tg.ready();  
-
-        let allProducts = [];
-        let activeCategory = 'Все';
-        let cart = {}; 
-
-        let currentPhotos = [];
-        let currentSlideIndex = 0;
-        let currentItem = null;
-        let selectedQty = 5;
-
-        async function loadProducts() {
-            try {
-                let response = await fetch(GOOGLE_URL, { redirect: "follow" });
-                let textData = await response.text();
-                allProducts = JSON.parse(textData);
-                renderCategories();
-                renderCatalog('Все');
-            } catch (e) {
-                document.getElementById('catalog').innerHTML = `<div class="loading">❌ Ошибка загрузки.</div>`;
-            }
-        }
-
-        function safeString(value) {
-            return (value != null) ? String(value).trim() : '';
-        }
-
-        function getTotalMl() {
-            let total = 0;
-            for (let name in cart) {
-                total += cart[name];
-            }
-            return total;
-        }
-
-        function getEffectivePrice(item, totalMl) {
-            let priceRaw = safeString(item['Цена']) || '0';
-            let basePrice = parseInt(priceRaw.replace(/[^0-9]/g, '')) || 0;
-            if (totalMl >= 100) {
-                return 100; 
-            }
-            return basePrice;
-        }
-
-        function renderCategories() {
-            let categoriesDiv = document.getElementById('categories');
-            categoriesDiv.innerHTML = '';
-            let categories = ['Все'];
-            
-            allProducts.forEach(item => {
-                let cat = safeString(item['Категория']);
-                if (cat && !categories.includes(cat)) { categories.push(cat); }
-            });
-
-            categories.forEach(cat => {
-                let btn = document.createElement('button');
-                btn.className = 'category-btn' + (cat === activeCategory ? ' active' : '');
-                btn.textContent = cat;
-                btn.onclick = () => {
-                    tg.HapticFeedback.impactOccurred('light'); 
-                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    activeCategory = cat;
-                    renderCatalog(cat);
-                };
-                categoriesDiv.appendChild(btn);
-            });
-        }
-
-        function renderCatalog(category) {
-            let catalogDiv = document.getElementById('catalog');
-            catalogDiv.innerHTML = '';
-            
-            let filtered = category === 'Все' 
-                ? allProducts 
-                : allProducts.filter(item => safeString(item['Категория']) === category);
-            
-            if (filtered.length === 0) {
-                catalogDiv.innerHTML = '<div class="loading">В этой категории пока нет товаров.</div>';
-                return;
-            }
-
-            let totalMl = getTotalMl();
-
-            filtered.forEach(item => {
-                let name = safeString(item['Название']) || 'Без названия';
-                let desc = safeString(item['Описание']);
-                let currentPrice = getEffectivePrice(item, totalMl);
-                
-                let rawPhotos = safeString(item['Ссылка_на_фото']);
-                let photos = rawPhotos ? rawPhotos.split(',').map(p => p.trim()).filter(p => p) : ['https://via.placeholder.com/300?text=Нет+фото'];
-                let mainPhoto = photos[0];
-
-                let currentMl = cart[name] || 0;
-
-                let card = document.createElement('div');
-                card.className = 'product-card';
-
-                card.innerHTML = `
-                    <div class="product-img-container" onclick="openModal('${name.replace(/'/g, "\\'")}')">
-                        <img src="${mainPhoto}" alt="${name}" class="product-img">
-                        ${photos.length > 1 ? `<span class="photo-badge">📷 ${photos.length}</span>` : ''}
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title" onclick="openModal('${name.replace(/'/g, "\\'")}')">${name}</h3>
-                        <p class="product-desc">${desc}</p>
-                        <div class="product-bottom">
-                            <span class="product-price">${currentPrice} ₽/мл</span>
-                            <div class="card-counter">
-                                ${currentMl === 0 ? `
-                                    <button class="action-btn" style="padding: 6px 10px; font-size: 11px;" onclick="changeCartQty('${name.replace(/'/g, "\\'")}', 5)">+ 5 мл</button>
-                                ` : `
-                                    <button class="card-cnt-btn" onclick="changeCartQty('${name.replace(/'/g, "\\'")}', -5)">−</button>
-                                    <span class="card-cnt-val">${currentMl} мл</span>
-                                    <button class="card-cnt-btn" onclick="changeCartQty('${name.replace(/'/g, "\\'")}', 5)">+</button>
-                                `}
-                            </div>
-                        </div>
-                    </div>
-                `;
-                catalogDiv.appendChild(card);
-            });
-        }
-
-        function changeCartQty(name, delta) {
-            tg.HapticFeedback.impactOccurred('light');
-            if (!cart[name]) cart[name] = 0;
-            cart[name] += delta;
-            
-            if (cart[name] <= 0) {
-                delete cart[name];
-            }
-            
-            renderCatalog(activeCategory);
-            updateCartBar();
-        }
-
-        function openModal(name) {
-            let item = allProducts.find(p => safeString(p['Название']) === name);
-            if (!item) return;
-
-            tg.HapticFeedback.impactOccurred('light');
-            currentItem = item;
-            
-            let rawPhotos = safeString(item['Ссылка_на_фото']);
-            currentPhotos = rawPhotos ? rawPhotos.split(',').map(p => p.trim()).filter(p => p) : ['https://via.placeholder.com/300?text=Нет+фото'];
-            currentSlideIndex = 0;
-            selectedQty = cart[name] || 5;
-
-            let desc = safeString(item['Описание']) || 'Описание отсутствует';
-            let currentPrice = getEffectivePrice(item, getTotalMl());
-
-            document.getElementById('modalTitle').textContent = name;
-            document.getElementById('modalDesc').textContent = desc;
-            document.getElementById('modalPrice').textContent = (currentPrice * selectedQty) + ' ₽';
-            document.getElementById('modalQty').textContent = selectedQty + ' мл';
-            
-            updateSlide();
-            document.getElementById('productModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('productModal').style.display = 'none';
-        }
-
-        function updateModalQty(delta) {
-            selectedQty += delta;
-            if (selectedQty < 5) selectedQty = 5; 
-            
-            let currentPrice = getEffectivePrice(currentItem, getTotalMl());
-
-            document.getElementById('modalQty').textContent = selectedQty + ' мл';
-            document.getElementById('modalPrice').textContent = (currentPrice * selectedQty) + ' ₽';
-            tg.HapticFeedback.impactOccurred('light');
-        }
-
-        function addModalToCart() {
-            if (!currentItem) return;
-            let name = safeString(currentItem['Название']);
-            cart[name] = selectedQty;
-            
-            tg.HapticFeedback.impactOccurred('medium');
-            closeModal();
-            renderCatalog(activeCategory);
-            updateCartBar();
-        }
-
-        function changeSlide(direction) {
-            currentSlideIndex += direction;
-            if (currentSlideIndex < 0) currentSlideIndex = currentPhotos.length - 1;
-            if (currentSlideIndex >= currentPhotos.length) currentSlideIndex = 0;
-            updateSlide();
-        }
-
-        function updateSlide() {
-            document.getElementById('modalImg').src = currentPhotos[currentSlideIndex];
-            let prevBtn = document.getElementById('prevBtn');
-            let nextBtn = document.getElementById('nextBtn');
-            if (currentPhotos.length > 1) {
-                prevBtn.style.display = 'block';
-                nextBtn.style.display = 'block';
-            } else {
-                prevBtn.style.display = 'none';
-                nextBtn.style.display = 'none';
-            }
-        }
-
-        function updateCartBar() {
-            let totalMl = getTotalMl();
-            let totalPriceCalc = 0;
-
-            for (let name in cart) {
-                let ml = cart[name];
-                let found = allProducts.find(p => safeString(p['Название']) === name);
-                if (found) {
-                    let pricePerMl = getEffectivePrice(found, totalMl);
-                    totalPriceCalc += pricePerMl * ml;
-                }
-            }
-
-            let promoText = document.getElementById('promoText');
-            if (totalMl >= 100) {
-                promoText.innerHTML = `🎉 Оптовая цена активирована! Все позиции пересчитаны по <span class="price-new">100 ₽/мл</span>.`;
-            } else {
-                let left = 100 - totalMl;
-                promoText.innerHTML = `При покупке от 100 мл любых ароматов цена: <span class="price-strike">150 ₽</span> <span class="price-new">100 ₽/мл</span>! (До опта еще ${left} мл)`;
-            }
-
-            let cartBar = document.getElementById('cartBar');
-            if (totalMl > 0) {
-                cartBar.style.display = 'flex';
-                let discountText = totalMl >= 100 ? ' (🔥 Опт активен)' : '';
-                document.getElementById('cartCountText').textContent = `Общий объем: ${totalMl} мл${discountText}`;
-                document.getElementById('cartTotalText').textContent = totalPriceCalc + ' ₽';
-            } else {
-                cartBar.style.display = 'none';
-            }
-        }
-
-        function checkout() {
-            tg.HapticFeedback.impactOccurred('heavy');
-            
-            let totalMl = getTotalMl();
-            let message = "🛍 Новый заказ из каталога:\n\n";
-            let grandTotal = 0;
-
-            for (let name in cart) {
-                let ml = cart[name];
-                let found = allProducts.find(p => safeString(p['Название']) === name);
-                let pricePerMl = found ? getEffectivePrice(found, totalMl) : 0;
-                let itemTotal = pricePerMl * ml;
-                grandTotal += itemTotal;
-
-                message += `▪️ ${name} — ${ml} мл (${itemTotal} ₽, по ${pricePerMl}₽/мл)\n`;
-            }
-            
-            message += `\nОбщий объем: ${totalMl} мл\nИтого к оплате: ${grandTotal} ₽`;
-
-            let encodedMessage = encodeURIComponent(message);
-            window.open(`https://t.me/GAGARIN_PARFUME_SHOP?text=${encodedMessage}`, '_blank');
-        }
-
-        loadProducts();
-    </script>
 </body>
 </html>
