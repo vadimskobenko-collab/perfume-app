@@ -3,98 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог Духов</title>
-    <!-- Подключаем сам Telegram -->
+    <title>Gagarin Parfum</title>
+    <!-- Подключаем Telegram Web App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Красивый шрифт для витрины -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Наводим красоту (дизайн) -->
     <style>
+        :root {
+            /* Цвета берутся из темы Телеграма пользователя */
+            --bg-color: var(--tg-theme-bg-color, #f4f5f7);
+            --text-color: var(--tg-theme-text-color, #222);
+            --card-bg: var(--tg-theme-secondary-bg-color, #fff);
+            --btn-bg: var(--tg-theme-button-color, #000);
+            --btn-text: var(--tg-theme-button-text-color, #fff);
+            --hint-color: var(--tg-theme-hint-color, #888);
+        }
+        
         body {
-            font-family: sans-serif;
-            background-color: var(--tg-theme-bg-color, #f4f4f4);
-            color: var(--tg-theme-text-color, #000);
-            padding: 15px;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
         }
-        .product {
-            background: var(--tg-theme-secondary-bg-color, #fff);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
+
+        /* Шапка */
+        header {
+            padding: 20px 15px 10px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-        .product img {
-            max-width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
+        h1 { margin: 0; font-size: 22px; font-weight: 700; }
+
+        /* Лента категорий */
+        .categories-wrapper {
+            position: sticky;
+            top: 0;
+            background: var(--bg-color);
+            padding: 10px 15px;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
         }
-        .product h3 { margin: 10px 0 5px; font-size: 18px; }
-        .product p { font-size: 14px; color: #666; margin: 0 0 10px; }
-        .price { font-weight: bold; font-size: 18px; margin-bottom: 10px; color: #2ecc71; }
-        button {
-            background: var(--tg-theme-button-color, #0088cc);
-            color: var(--tg-theme-button-text-color, #fff);
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
+        .categories-wrapper::-webkit-scrollbar { display: none; }
+        
+        .category-btn {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--hint-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .category-btn.active {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border-color: var(--btn-bg);
+        }
+
+        /* Сетка товаров (в 2 колонки) */
+        .catalog {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 15px;
+        }
+
+        /* Карточка товара */
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+        }
+        .product-img {
             width: 100%;
-            font-size: 16px;
-            font-weight: bold;
+            aspect-ratio: 1; /* Квадратное фото */
+            object-fit: cover;
+            background-color: #f0f0f0;
+        }
+        .product-info {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .product-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin: 0 0 4px;
+            line-height: 1.2;
+        }
+        .product-desc {
+            font-size: 11px;
+            color: var(--hint-color);
+            margin: 0 0 10px;
+            flex-grow: 1;
+            /* Обрезаем текст на 2 строки */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .product-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        .product-price {
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .buy-btn {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading {
+            grid-column: span 2;
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--hint-color);
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <div id="catalog">⏳ Загружаем духи из таблицы...</div>
+    <header>
+        <h1>Gagarin Parfum</h1>
+    </header>
 
-    <!-- Пишем логику работы -->
+    <!-- Блок для кнопок категорий -->
+    <div class="categories-wrapper" id="categories"></div>
+
+    <!-- Блок для карточек товаров -->
+    <div class="catalog" id="catalog">
+        <div class="loading">⏳ Загружаем роскошные ароматы...</div>
+    </div>
+
     <script>
-        // ВСТАВЬ СВОЮ ССЫЛКУ ИЗ GOOGLE ТАБЛИЦ В КАВЫЧКИ НИЖЕ:
+        // ❗️❗️❗️ НЕ ЗАБУДЬ ВСТАВИТЬ СЮДА СВОЮ ССЫЛКУ ИЗ GOOGLE ТАБЛИЦ:
         const GOOGLE_URL = 'https://script.google.com/macros/s/AKfycbzDOq4pYY1SDKxNSeHb6nO_aBX2B6AeN_clLhc3LJ2myVI_OCNF6xzEN7pd0iWpD0mh/exec';
 
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Открываем приложение на весь экран телефона
+        tg.expand(); // Открываем на весь экран
+        tg.ready();  // Сообщаем, что приложение загружено
 
-        // Функция получения данных из таблицы
+        let allProducts = [];
+        let activeCategory = 'Все';
+
+        // Загрузка товаров
         async function loadProducts() {
             try {
                 let response = await fetch(GOOGLE_URL);
-                let data = await response.json();
+                allProducts = await response.json();
                 
-                let catalogDiv = document.getElementById('catalog');
-                catalogDiv.innerHTML = ''; // Убираем надпись "Загружаем..."
-
-                data.forEach(item => {
-                    let productDiv = document.createElement('div');
-                    productDiv.className = 'product';
-                    productDiv.innerHTML = `
-                        <img src="${item['Ссылка_на_фото']}" alt="${item['Название']}">
-                        <h3>${item['Название']}</h3>
-                        <p>${item['Описание']}</p>
-                        <div class="price">${item['Цена']}</div>
-                        <button onclick="buy('${item['Название']}')">Купить</button>
-                    `;
-                    catalogDiv.appendChild(productDiv);
-                });
+                renderCategories();
+                renderCatalog('Все');
             } catch (e) {
-                document.getElementById('catalog').innerHTML = '❌ Ошибка загрузки товаров.';
+                document.getElementById('catalog').innerHTML = '<div class="loading">❌ Ошибка загрузки данных.</div>';
             }
         }
 
-        // Функция нажатия на кнопку "Купить"
-        function buy(name) {
-            tg.MainButton.text = "Оформить заказ: " + name;
-            tg.MainButton.show();
-            // Когда пользователь нажмет главную кнопку внизу
-            tg.MainButton.onClick(() => {
-                // Отправляем данные в бота
-                tg.sendData(name); 
+        // Отрисовка ленты категорий
+        function renderCategories() {
+            let categoriesDiv = document.getElementById('categories');
+            categoriesDiv.innerHTML = '';
+
+            // Собираем уникальные категории из колонки "Категория"
+            let categories = ['Все'];
+            allProducts.forEach(item => {
+                let cat = item['Категория'] ? item['Категория'].trim() : '';
+                if (cat && !categories.includes(cat)) {
+                    categories.push(cat);
+                }
+            });
+
+            // Рисуем кнопки
+            categories.forEach(cat => {
+                let btn = document.createElement('button');
+                btn.className = 'category-btn' + (cat === activeCategory ? ' active' : '');
+                btn.textContent = cat;
+                
+                btn.onclick = () => {
+                    tg.HapticFeedback.impactOccurred('light'); // Вибрация при клике
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    activeCategory = cat;
+                    renderCatalog(cat);
+                };
+                categoriesDiv.appendChild(btn);
             });
         }
 
-        // Запускаем загрузку товаров при открытии
+        // Отрисовка сетки товаров
+        function renderCatalog(category) {
+            let catalogDiv = document.getElementById('catalog');
+            catalogDiv.innerHTML = '';
+
+            // Фильтруем по категории
+            let filtered = category === 'Все' 
+                ? allProducts 
+                : allProducts.filter(item => (item['Категория'] || '').trim() === category);
+
+            if (filtered.length === 0) {
+                catalogDiv.innerHTML = '<div class="loading">В этой категории пока нет товаров.</div>';
+                return;
+            }
+
+            // Рисуем карточки
+            filtered.forEach(item => {
+                let price = item['Цена'] ? item['Цена'] : 'Цена по запросу';
+                let imgUrl = item['Ссылка_на_фото'] ? item['Ссылка_на_фото'] : 'https://via.placeholder.com/300?text=Нет+фото';
+                
+                let card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <img src="${imgUrl}" alt="${item['Название']}" class="product-img">
+                    <div class="product-info">
+                        <h3 class="product-title">${item['Название']}</h3>
+                        <p class="product-desc">${item['Описание'] || ''}</p>
+                        <div class="product-bottom">
+                            <span class="product-price">${price}</span>
+                            <button class="buy-btn" onclick="buy('${item['Название'].replace(/'/g, "\\'")}')">➕</button>
+                        </div>
+                    </div>
+                `;
+                catalogDiv.appendChild(card);
+            });
+        }
+
+        // Обработка кнопки покупки
+        function buy(name) {
+            tg.HapticFeedback.impactOccurred('medium'); // Вибрация
+            tg.MainButton.text = "ОФОРМИТЬ ЗАКАЗ: " + name;
+            tg.MainButton.color = tg.themeParams.button_color || "#000000";
+            tg.MainButton.textColor = tg.themeParams.button_text_color || "#ffffff";
+            tg.MainButton.show();
+            
+            tg.MainButton.onClick(() => {
+                tg.sendData(name);
+            });
+        }
+
+        // Запуск
         loadProducts();
     </script>
 </body>
